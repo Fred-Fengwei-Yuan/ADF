@@ -40,10 +40,13 @@ mcp_app = mcp.http_app(path='/mcp')
 app.mount("/mcp-server", mcp_app)
 
 # 导入核心组件
-from .task_manager import TaskQueueManager
-from .data_processer import PreprocessingSystem
-from .mq_client import MQClientFactory, MQConfig
-from .service_registry import ServiceRegistry
+from .utils import (
+    TaskQueueManager,
+    PreprocessingSystem,
+    MQClientFactory,
+    MQConfig,
+    ServiceRegistry
+)
 
 # 初始化组件
 task_queue_manager = TaskQueueManager()
@@ -53,6 +56,16 @@ service_registry = ServiceRegistry()
 # 初始化消息队列客户端
 mq_config = MQConfig()  # 根据实际配置初始化
 mq_client = MQClientFactory.create_client("rocketmq", mq_config)
+
+@app.on_event("startup")
+async def startup_event():
+    """应用启动时的事件处理"""
+    await task_queue_manager.start()
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """应用关闭时的事件处理"""
+    await task_queue_manager.stop()
 
 # 导出主要组件
 __all__ = [

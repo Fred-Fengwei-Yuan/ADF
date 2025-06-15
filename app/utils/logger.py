@@ -1,39 +1,48 @@
+"""
+日志工具模块
+~~~~~~~~~~~
+
+提供日志记录功能。
+"""
+
 import logging
-import logging.handlers
-from flask import Flask
+import os
 from typing import Optional
 
-class Logger:
-    """日志管理器"""
+def get_logger(name: str, level: Optional[int] = None) -> logging.Logger:
+    """
+    获取日志记录器
     
-    def __init__(self, name: str):
-        self.logger = logging.getLogger(name)
-        self.setup_logger()
+    Args:
+        name: 日志记录器名称
+        level: 日志级别，如果为None则使用环境变量中的设置
         
-    def setup_logger(self) -> None:
-        """设置日志器"""
-        pass
-        
-    def setup_file_handler(self, filename: str) -> None:
-        """设置文件处理器"""
-        pass
-        
-    def setup_rotation_handler(self, filename: str) -> None:
-        """设置轮转处理器"""
-        pass
-        
-    def info(self, message: str) -> None:
-        """记录信息日志"""
-        pass
-        
-    def error(self, message: str) -> None:
-        """记录错误日志"""
-        pass
-        
-    def debug(self, message: str) -> None:
-        """记录调试日志"""
-        pass
-
-def setup_logger(app: Flask) -> None:
-    """设置应用日志"""
-    pass 
+    Returns:
+        日志记录器实例
+    """
+    logger = logging.getLogger(name)
+    
+    # 设置日志级别
+    if level is None:
+        level = os.getenv('LOG_LEVEL', 'INFO')
+        level = getattr(logging, level.upper())
+    logger.setLevel(level)
+    
+    # 如果已经有处理器，直接返回
+    if logger.handlers:
+        return logger
+    
+    # 创建控制台处理器
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(level)
+    
+    # 创建格式化器
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+    console_handler.setFormatter(formatter)
+    
+    # 添加处理器
+    logger.addHandler(console_handler)
+    
+    return logger

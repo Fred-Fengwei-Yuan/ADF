@@ -6,8 +6,13 @@ authors = [
     {name = "Fred Yuan", email = "cjcj188@gmail.com"}
 ]
 dependencies = [
+    "aliyun-log-python-sdk>=0.9.23",
     "fastapi[standard]>=0.115.12",
     "fastmcp>=2.8.1",
+    "langdetect>=1.0.9",
+    "opencv-python>=4.11.0.86",
+    "pillow>=11.2.1",
+    "python-magic>=0.4.27",
     "uvicorn>=0.34.3",
 ] 
 

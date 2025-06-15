@@ -5,20 +5,16 @@
 这个模块定义了API路由和请求处理逻辑，同时支持RESTful API和MCP工具调用。
 """
 
-from fastmcp import FastMCP
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from starlette.routing import Mount
-from pydantic import BaseModel, Field
 from typing import Dict, Any, Optional, List
-
 from dotenv import load_dotenv
 import os
+from fastmcp import FastMCP
 
-from .task_manager import TaskQueueManager
-from .data_processer import PreprocessingSystem
-from .mq_client import MQClientFactory, MQConfig
-from .service_registry import ServiceRegistry
+from .utils import TaskQueueManager, PreprocessingSystem, MQClientFactory, MQConfig, ServiceRegistry
+from .models.requests import SyncRequest, AsyncRequest, TaskResponse, ErrorResponse
 
 # 加载环境变量
 load_dotenv()
@@ -41,27 +37,6 @@ service_registry = ServiceRegistry()
 # 初始化消息队列客户端
 mq_config = MQConfig()  # 根据实际配置初始化
 mq_client = MQClientFactory.create_client("rocketmq", mq_config)
-
-# 请求模型定义
-class SyncRequest(BaseModel):
-    """同步请求数据模型"""
-    data: Dict[str, Any] = Field(..., description="要处理的数据")
-
-class AsyncRequest(BaseModel):
-    """异步请求数据模型"""
-    data: Dict[str, Any] = Field(..., description="要处理的数据")
-    callback_url: Optional[str] = Field(None, description="任务完成后的回调URL")
-
-# 响应模型定义
-class TaskResponse(BaseModel):
-    """任务响应数据模型"""
-    task_id: str = Field(..., description="任务ID")
-    message: str = Field(..., description="响应消息")
-
-class ErrorResponse(BaseModel):
-    """错误响应数据模型"""
-    error: str = Field(..., description="错误类型")
-    detail: Optional[str] = Field(None, description="错误详情")
 
 # MCP工具定义
 @mcp.tool("process_sync")
