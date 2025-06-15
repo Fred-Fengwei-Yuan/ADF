@@ -1,0 +1,22 @@
+[project]
+name = "algorithm-server-deployment-framework"
+version = "0.1.0"
+description = "适用于算法服务器的部署框架，提供完整的API服务、并发管理、数据处理、服务注册和日志管理功能"
+authors = [
+    {name = "Fred Yuan", email = "cjcj188@gmail.com"}
+]
+dependencies = [
+    "fastapi[standard]>=0.115.12",
+    "fastmcp>=2.8.1",
+    "uvicorn>=0.34.3",
+] 
+
+requires-python = ">=3.11"
+readme = "README.md"
+license = "MIT"
+
+
+[project.optional-dependencies]
+dev = [
+
+]
