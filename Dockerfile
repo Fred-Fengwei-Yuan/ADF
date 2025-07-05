@@ -1,24 +1,36 @@
 FROM python:3.11-slim
 
 
-WORKDIR /code
+WORKDIR /app
 
 
-COPY ./requirements.txt /code/requirements.txt
-
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
+RUN apt-get update && apt-get install -y \
+    gcc \
     && rm -rf /var/lib/apt/lists/*
 
 
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+COPY pyproject.toml uv.lock ./
 
 
-RUN uv sync --no-dev
+RUN pip install uv
 
 
-COPY ./app /code/app
+RUN uv sync --frozen
 
 
-CMD ["fastapi", "run", "app/main.py", "--port", "80", "--host", "0.0.0.0", "--workers", "4"]
+COPY . .
+
+
+RUN mkdir -p logs
+
+
+EXPOSE 8000
+
+
+ENV PYTHONPATH=/app
+ENV API_WORKERS=4
+ENV ENGINE_WORKERS=2
+ENV TASK_QUEUE_SIZE=1000
+
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]

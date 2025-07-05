@@ -9,7 +9,8 @@ from .data_processer import PreprocessingSystem
 from .mq_client import MQClientFactory, MQConfig
 from .service_registry import ServiceRegistry
 from .task_manager import TaskQueueManager
-from .logger import get_logger
+from .logger import get_api_logger
+from .storage_client import StorageClientFactory, IStorageClient
 
 __all__ = [
     'PreprocessingSystem',
@@ -17,5 +18,7 @@ __all__ = [
     'MQConfig',
     'ServiceRegistry',
     'TaskQueueManager',
-    'get_logger'
+    'get_api_logger',
+    'StorageClientFactory',
+    'IStorageClient'
 ] 

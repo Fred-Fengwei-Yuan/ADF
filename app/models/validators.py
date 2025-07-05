@@ -21,7 +21,7 @@ class TextValidationModel(BaseValidationModel):
     """文本验证模型"""
     text: str = Field(..., description="要验证的文本")
     min_length: int = Field(0, description="最小长度")
-    max_length: Optional[int] = Field(None, description="最大长度")
+    max_length: int | None = Field(None, description="最大长度")
     allowed_languages: List[str] = Field(default=["zh-cn", "en"], description="允许的语言列表")
 
     @field_validator("text")
@@ -104,8 +104,8 @@ class VideoValidationModel(BaseValidationModel):
     max_duration_seconds: float = Field(300.0, description="最大时长(秒)")
     min_width: int = Field(320, description="最小宽度")
     min_height: int = Field(240, description="最小高度")
-    max_width: Optional[int] = Field(3840, description="最大宽度")
-    max_height: Optional[int] = Field(2160, description="最大高度")
+    max_width: int | None = Field(3840, description="最大宽度")
+    max_height: int | None = Field(2160, description="最大高度")
     allowed_formats: List[str] = Field(
         default=["video/mp4", "video/avi", "video/mov"],
         description="允许的视频格式"
